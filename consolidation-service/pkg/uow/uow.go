@@ -58,7 +58,11 @@ func (u *Uow) Do(ctx context.Context, fn func(uow *Uow) error) error {
 	u.Tx = tx
 	err = fn(u)
 	if err != nil {
-		return u.Rollback()
+		uerr := u.Rollback()
+		if uerr == nil {
+			return err
+		}
+		return uerr
 	}
 	return u.CommitOrRollback()
 }

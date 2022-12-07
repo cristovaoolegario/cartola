@@ -29,6 +29,21 @@ func RunDbInit(relativePath string, db *sql.DB) error {
 	return nil
 }
 
+func PopulateDb(relativePath string, db *sql.DB) error {
+	path := filepath.Join(relativePath, "sql", "migrations", "20221202144112_data.down.sql")
+
+	c, err := ioutil.ReadFile(path)
+	if err != nil {
+		return err
+	}
+	sql := string(c)
+	_, err = db.Exec(sql)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func RegisterRepositories(uow *uow.Uow) {
 	uow.Register("PlayerRepository", func(tx *sql.Tx) interface{} {
 		repo := NewPlayerRepository(uow.Db)
