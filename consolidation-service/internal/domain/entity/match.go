@@ -30,6 +30,7 @@ type Match struct {
 	Date    time.Time
 	Status  string
 	Result  MatchResult
+	Actions []GameAction
 }
 
 func NewMatch(id string, teamA *Team, teamB *Team, date time.Time) *Match {
