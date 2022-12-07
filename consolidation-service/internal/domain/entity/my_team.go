@@ -9,7 +9,9 @@ type MyTeam struct {
 
 func NewMyTeam(id, name string) *MyTeam {
 	return &MyTeam{
-		ID:   id,
-		Name: name,
+		ID:      id,
+		Name:    name,
+		Players: []string{},
+		Score:   0,
 	}
 }
