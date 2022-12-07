@@ -22,7 +22,7 @@ func NewMyTeamRepository(dbConn *sql.DB) *MyTeamRepository {
 
 func (m *MyTeamRepository) AddScore(ctx context.Context, myTeam *entity.MyTeam, score float64) error {
 	// check if my team exists for update
-	_, err := m.FindByIDForUpdate(ctx, myTeam.ID)
+	_, err := m.FindByID(ctx, myTeam.ID)
 	if err != nil {
 		return err
 	}

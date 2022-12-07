@@ -43,7 +43,7 @@ func (r *PlayerRepository) FindByID(ctx context.Context, id string) (*entity.Pla
 }
 
 func (r *PlayerRepository) FindByIDForUpdate(ctx context.Context, id string) (*entity.Player, error) {
-	player, err := r.Queries.FindPlayerByIdForUpdate(ctx, id)
+	player, err := r.Queries.FindPlayerById(ctx, id)
 	if err != nil {
 		return nil, err
 	}

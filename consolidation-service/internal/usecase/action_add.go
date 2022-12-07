@@ -1,0 +1,106 @@
+package usecase
+
+import (
+	"context"
+	"errors"
+	"fmt"
+
+	"github.com/cristovaoolegario/cartola/consolidation-service/internal/domain/entity"
+	"github.com/cristovaoolegario/cartola/consolidation-service/internal/domain/repository"
+	"github.com/cristovaoolegario/cartola/consolidation-service/pkg/uow"
+)
+
+var errActionNotFound = errors.New("action not found")
+
+type ActionAddInput struct {
+	MatchID  string
+	TeamID   string
+	PlayerID string
+	Minute   int
+	Action   string
+}
+
+type ActionAddUseCase struct {
+	Uow         uow.UowInterface
+	ActionTable entity.ActionTableInterface
+}
+
+func NewActionAddUseCase(uow uow.UowInterface, actionTable entity.ActionTableInterface) *ActionAddUseCase {
+	return &ActionAddUseCase{
+		Uow:         uow,
+		ActionTable: actionTable,
+	}
+}
+
+// execute
+func (uc *ActionAddUseCase) Execute(ctx context.Context, input ActionAddInput) error {
+	err := uc.Uow.Do(ctx, func(_ *uow.Uow) error {
+		matchRepo := uc.getMatchRepository(ctx)
+		playerRepo := uc.getPlayerRepository(ctx)
+		myTeamRepo := uc.getMyTeamRepository(ctx)
+
+		match, err := matchRepo.FindByID(ctx, input.MatchID)
+		if err != nil {
+			return err
+		}
+
+		score, err := uc.ActionTable.GetScore(input.Action)
+		if err != nil {
+			return errActionNotFound
+		}
+		theAction := entity.NewGameAction(input.PlayerID, input.Minute, input.Action, score, input.TeamID)
+		match.Actions = append(match.Actions, *theAction)
+		fmt.Println("match.Actions: ", theAction)
+
+		err = matchRepo.SaveActions(ctx, match, float64(score))
+		if err != nil {
+			return err
+		}
+
+		player, err := playerRepo.FindByID(ctx, input.PlayerID)
+		if err != nil {
+			return err
+		}
+
+		player.Price += float64(score)
+		err = playerRepo.Update(ctx, player)
+		if err != nil {
+			return err
+		}
+
+		myTeam, err := myTeamRepo.FindByID(ctx, input.TeamID)
+		if err != nil {
+			return err
+		}
+		err = myTeamRepo.AddScore(ctx, myTeam, float64(score))
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
+}
+
+func (uc *ActionAddUseCase) getMatchRepository(ctx context.Context) repository.MatchRepositoryInterface {
+	matchRepository, err := uc.Uow.GetRepository(ctx, "MatchRepository")
+	if err != nil {
+		panic(err)
+	}
+	return matchRepository.(repository.MatchRepositoryInterface)
+}
+
+func (uc *ActionAddUseCase) getMyTeamRepository(ctx context.Context) repository.MyTeamRepositoryInterface {
+	myTeamRepository, err := uc.Uow.GetRepository(ctx, "MyTeamRepository")
+	if err != nil {
+		panic(err)
+	}
+	return myTeamRepository.(repository.MyTeamRepositoryInterface)
+}
+
+func (uc *ActionAddUseCase) getPlayerRepository(ctx context.Context) repository.PlayerRepositoryInterface {
+	playerRepository, err := uc.Uow.GetRepository(ctx, "PlayerRepository")
+	if err != nil {
+		panic(err)
+	}
+	return playerRepository.(repository.PlayerRepositoryInterface)
+}
