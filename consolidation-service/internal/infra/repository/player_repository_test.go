@@ -16,7 +16,7 @@ func TestPlayerRepository(t *testing.T) {
 		t.Errorf("An error has occur when connecting to the database: %s", err.Error())
 	}
 
-	err = RunDbInit(db)
+	err = RunDbInit("../../../", db)
 
 	if err != nil {
 		t.Errorf("An error has occur when running the Migrations: %s", err.Error())
