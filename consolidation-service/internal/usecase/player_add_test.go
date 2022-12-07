@@ -1,36 +1,16 @@
 package usecase
 
 import (
-	"context"
-	"database/sql"
 	"testing"
 
-	_ "github.com/mattn/go-sqlite3"
-
 	"github.com/cristovaoolegario/cartola/consolidation-service/internal/infra/repository"
-	"github.com/cristovaoolegario/cartola/consolidation-service/pkg/uow"
 )
 
 func TestPlayer(t *testing.T) {
-	ctx := context.Background()
-	db, err := sql.Open("sqlite3", ":memory:")
-	if err != nil {
-		t.Errorf("An error has occur when connecting to the database: %s", err.Error())
-	}
-
-	err = repository.RunDbInit("../../", db)
-
-	if err != nil {
-		t.Errorf("An error has occur when running the Migrations: %s", err.Error())
-	}
+	ctx, db := repository.SetupTestDb("../../")
+	uow := repository.SetupTestUoW(ctx, db)
 
 	defer db.Close()
-
-	uow, err := uow.NewUow(ctx, db)
-	if err != nil {
-		t.Errorf("An error has occur when setting up Unit of Work: %s", err.Error())
-	}
-	repository.RegisterRepositories(uow)
 
 	t.Run("Execute AddPlayers UC", func(t *testing.T) {
 		ucInput := AddPlayerInput{
@@ -43,7 +23,7 @@ func TestPlayer(t *testing.T) {
 			Uow: uow,
 		}
 
-		err = uc.Execute(ctx, ucInput)
+		err := uc.Execute(ctx, ucInput)
 
 		if err != nil {
 			t.Errorf("Not expected an error to happened, got %s", err.Error())
