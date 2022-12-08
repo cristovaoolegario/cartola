@@ -1,4 +1,4 @@
-version: "3"
+version: "4"
 
 services:
   mysql:
@@ -10,5 +10,8 @@ services:
       MYSQL_PASSWORD: root
     ports:
       - "3306:3306"
+    volumes:
+      - "./sql/migrations/20221127164400_init.up.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./sql/migrations/20221202144112_data.down.sql:/docker-entrypoint-initdb.d/2.sql"
     extra_hosts:
       - "host.docker.internal:172.17.0.1"
