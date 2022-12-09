@@ -27,8 +27,11 @@ func main() {
 	repository.RegisterRepositories(uow)
 
 	router := chi.NewRouter()
-	router.Get("/players", httphandler.ListPlayersHandler(ctx, *db.New(dtb)))
 	router.Get("/my-teams/{teamID}/players", httphandler.ListMyTeamPlayersHandler(ctx, *db.New(dtb)))
+	router.Get("/players", httphandler.ListPlayersHandler(ctx, *db.New(dtb)))
+	router.Get("/my-teams/{teamID}/balance", httphandler.GetMyTeamBalanceHandler(ctx, *db.New(dtb)))
+	router.Get("/matches", httphandler.ListMatchesHandler(ctx, repository.NewMatchRepository(dtb)))
+	router.Get("/matches/{matchID}", httphandler.ListMatchByIDHandler(ctx, repository.NewMatchRepository(dtb)))
 
 	if err = http.ListenAndServe(":8080", router); err != nil {
 		panic(err)
