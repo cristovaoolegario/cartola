@@ -13,11 +13,11 @@ import (
 var errActionNotFound = errors.New("action not found")
 
 type ActionAddInput struct {
-	MatchID  string
-	TeamID   string
-	PlayerID string
-	Minute   int
-	Action   string
+	MatchID  string `json:"match_id"`
+	TeamID   string `json:"team_id"`
+	PlayerID string `json:"player_id"`
+	Minute   int    `json:"minutes"`
+	Action   string `json:"action"`
 }
 
 type ActionAddUseCase struct {
