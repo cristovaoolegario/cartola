@@ -13,3 +13,9 @@ class Team(models.Model):
   
   def __str__(self):
         return self.name
+
+class MyTeam(models.Model):
+  players = models.ManyToManyField(Player)
+
+  def __str__(self):
+        return [player.name for player in self.players.all()].__str__()
