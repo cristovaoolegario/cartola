@@ -31,3 +31,20 @@ class Match(models.Model):
 
     def __str__(self):
         return f"{self.team_a.name} x {self.team_b.name}"
+
+class Action(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.PROTECT)
+    team = models.ForeignKey(Team, on_delete=models.PROTECT)
+    minutes = models.IntegerField()
+    match = models.ForeignKey(Match, on_delete=models.PROTECT, related_name='actions')
+
+    class Actions(models.TextChoices):
+        GOAL = 'goal', 'Goal'
+        ASSIST = 'assist', 'Assist'
+        YELLOW_CARD = 'yellow card', 'Yellow Card'
+        RED_CARD = 'red card', 'Red Card'
+
+    action = models.CharField(max_length=50, choices=Actions.choices)
+
+    def __str__(self):
+        return f"{self.minutes}' - {self.player.name} - {self.action}"
