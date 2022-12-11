@@ -3,8 +3,8 @@ name: Django CI
 on:
   push:
     branches: ["main"]
-#    paths:
-#      - "django-panel/**"
+    paths:
+      - "django-panel/**"
 
 jobs:
   build-linux:
