@@ -1,6 +1,7 @@
 name: Django CI
 
 on:
+  workflow_dispatch:
   push:
     branches: ["main"]
     paths:
@@ -9,6 +10,11 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      DEBUG: ${{ secrets.DEBUG }}
+      ALLOWED_HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     defaults:
       run:
         working-directory: ./django-panel

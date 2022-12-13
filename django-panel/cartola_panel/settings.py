@@ -82,10 +82,20 @@ WSGI_APPLICATION = 'cartola_panel.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# https://docs.djangoproject.com/en/4.1/ref/settings/#databases 
+
+db = ''
+
+if env.db() is None:
+    db = dj_database_url.config(default=env.db())
+else:
+    db={
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 
 DATABASES = {
-    'default': dj_database_url.config(default=env.db())
+    'default': db
 }
 
 
