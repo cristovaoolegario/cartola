@@ -9,6 +9,20 @@ export const roboto = Roboto({
 });
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#B8C858",
+    },
+    secondary: {
+      main: "#0E4987",
+    },
+    divider: "#1B73A7",
+    background: {
+      default: "#09345e",
+      paper: "#0E4987",
+    },
+    mode: "dark",
+  },
   components: {
     MuiCssBaseline: {
       styleOverrides: {

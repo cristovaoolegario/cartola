@@ -1,16 +1,38 @@
 import { AppBar, Box, Button, Toolbar } from "@mui/material";
 import Image from "next/image";
 import Link, { LinkProps } from "next/link";
+import { useRouter } from "next/router";
 import { PropsWithChildren } from "react";
 
-export type NavbarItemProps = LinkProps;
+export type NavbarItemProps = LinkProps & { showUnderLine: boolean };
 
 export const NavbarItem = (props: PropsWithChildren<NavbarItemProps>) => {
-  //@ts-expect-error
-  return <Button component={Link} sx={{ color: "white" }} {...props} />;
+  const { showUnderLine, ...linkProps } = props;
+  return (
+    //@ts-expect-error
+    <Button
+      component={Link}
+      sx={{
+        color: "white",
+        display: "inline-block",
+        textAlign: "center",
+        "&::after": (theme) => ({
+          content: '""',
+          borderBottom: `4px solid ${
+            showUnderLine ? theme.palette.primary.main : "transparent"
+          }`,
+          width: "100%",
+          display: "block",
+        }),
+      }}
+      {...linkProps}
+    />
+  );
 };
 
 export const Navbar = () => {
+  const router = useRouter();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ background: "none", boxShadow: "none" }}>
@@ -22,10 +44,24 @@ export const Navbar = () => {
             alt="logo"
             priority={true}
           />
-          <Box sx={{ flexGrow: 1 }}>
-            <NavbarItem href="/">Home</NavbarItem>
-            <NavbarItem href="/players">Players</NavbarItem>
-            <NavbarItem href="/matches">Matches</NavbarItem>
+          <Box sx={{ flexGrow: 1, ml: (theme) => theme.spacing(4) }}>
+            <NavbarItem href="/" showUnderLine={router.pathname === "/"}>
+              Home
+            </NavbarItem>
+            <NavbarItem
+              href="/players"
+              showUnderLine={router.pathname === "/players"}
+            >
+              Players
+            </NavbarItem>
+            <NavbarItem
+              href="/matches"
+              showUnderLine={["/matches", "/matches/[id]"].includes(
+                router.pathname
+              )}
+            >
+              Matches
+            </NavbarItem>
           </Box>
         </Toolbar>
       </AppBar>
