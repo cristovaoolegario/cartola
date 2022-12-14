@@ -2,6 +2,7 @@ import GroupIcon from "@mui/icons-material/Groups";
 import { Button, Grid } from "@mui/material";
 import Link from "next/link";
 import { Page } from "../components/Page";
+import { TeamLogo } from "../components/TeamLogo";
 
 export default function Home() {
   return (
@@ -14,7 +15,9 @@ export default function Home() {
           alignItems: "center",
         }}
       >
-        <Grid item></Grid>
+        <Grid item>
+          <TeamLogo />
+        </Grid>
         <Grid item>
           <Button
             component={Link}
