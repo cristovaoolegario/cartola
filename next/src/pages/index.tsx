@@ -1,13 +1,31 @@
-import { Button } from "@mui/material";
-import Head from "next/head";
-import Image from "next/image";
+import GroupIcon from "@mui/icons-material/Groups";
+import { Button, Grid } from "@mui/material";
+import Link from "next/link";
 import { Page } from "../components/Page";
-import styles from "../styles/Home.module.css";
 
 export default function Home() {
   return (
     <Page>
-      <Button variant="contained">Test</Button>
+      <Grid
+        container
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Grid item></Grid>
+        <Grid item>
+          <Button
+            component={Link}
+            href="/players"
+            variant="contained"
+            startIcon={<GroupIcon />}
+          >
+            Choose players
+          </Button>
+        </Grid>
+      </Grid>
     </Page>
   );
 }
