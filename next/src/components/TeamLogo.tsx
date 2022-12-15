@@ -1,14 +1,18 @@
-import { Box, Typography } from "@mui/material";
+import { Box, BoxProps, Typography } from "@mui/material";
 import Image from "next/image";
 import { Label } from "./Label";
 
-export const TeamLogo = () => {
+export type TeamLogoProps = BoxProps;
+
+export const TeamLogo = (props: TeamLogoProps) => {
   return (
     <Box
+      {...props}
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        ...props.sx,
       }}
     >
       <Image

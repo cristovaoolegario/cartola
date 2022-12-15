@@ -41,6 +41,15 @@ const theme = createTheme({
         },
       },
     },
+    MuiPaper: {
+      styleOverrides: {
+        root: ({ theme, ownerState }) => ({
+          ...(ownerState.variant === "outlined" && {
+            border: `3px solid ${theme.palette.divider}`,
+          }),
+        }),
+      },
+    },
   },
 });
 
